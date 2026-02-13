@@ -1,160 +1,310 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Will You Love Me?</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Question</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blush-light: #fff5f5;
+            --blush-medium: #ffe3e3;
+            --accent-pink: #ff8787;
+            --deep-rose: #fa5252;
+            --glass: rgba(255, 255, 255, 0.7);
+            --shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-<style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe3e3 50%, #ffdada 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: #4a4a4a;
+        }
 
-body{
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-family:'Poppins', sans-serif;
-  background: linear-gradient(135deg,#ffd1dc,#ff9aa2);
-  overflow:hidden;
-}
+        /* Animated Background Hearts */
+        .bg-heart {
+            position: absolute;
+            color: rgba(255, 135, 135, 0.2);
+            user-select: none;
+            pointer-events: none;
+            z-index: 0;
+            animation: float Up 6s linear infinite;
+        }
 
-/* Glass Card */
-.card{
-  width:90%;
-  max-width:420px;
-  padding:50px 30px;
-  text-align:center;
-  border-radius:30px;
-  background: rgba(255,255,255,0.25);
-  backdrop-filter: blur(20px);
-  box-shadow: 0 25px 60px rgba(0,0,0,0.15);
-  position:relative;
-}
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
 
-h1{
-  font-family:'Playfair Display', serif;
-  font-size:2.3rem;
-  color:#ffffff;
-  margin-bottom:40px;
-}
+        /* Glassmorphism Card */
+        .container {
+            position: relative;
+            z-index: 10;
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 3rem;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: var(--shadow);
+            text-align: center;
+            width: 90%;
+            max-width: 450px;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
 
-.buttons{
-  position:relative;
-  height:120px;
-}
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #2d3436;
+            line-height: 1.2;
+        }
 
-button{
-  border:none;
-  padding:15px 45px;
-  font-size:1.1rem;
-  border-radius:50px;
-  cursor:pointer;
-  transition:all 0.3s ease;
-  font-weight:600;
-}
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            height: 60px;
+            position: relative;
+        }
 
-/* YES Button */
-#yes{
-  background: linear-gradient(135deg,#ff6f91,#ff4d6d);
-  color:white;
-  box-shadow: 0 8px 25px rgba(255,77,109,0.4);
-}
+        button {
+            padding: 12px 35px;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
 
-#yes:hover{
-  transform: translateY(-3px) scale(1.05);
-}
+        #yesBtn {
+            background: var(--accent-pink);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 135, 135, 0.4);
+        }
 
-/* NO Button */
-#no{
-  position:absolute;
-  left:55%;
-  background:white;
-  color:#ff4d6d;
-  box-shadow:0 6px 20px rgba(0,0,0,0.1);
-}
+        #yesBtn:hover {
+            transform: translateY(-3px) scale(1.05);
+            background: var(--deep-rose);
+        }
 
-.popup{
-  margin-top:30px;
-  font-size:1.5rem;
-  color:white;
-  opacity:0;
-  transform:translateY(20px);
-  transition:0.4s ease;
-}
+        #noBtn {
+            background: white;
+            color: var(--accent-pink);
+            border: 1px solid var(--accent-pink);
+            position: absolute; /* Controlled by JS */
+            z-index: 11;
+            white-space: nowrap;
+            transition: box-shadow 0.3s ease;
+        }
 
-.popup.show{
-  opacity:1;
-  transform:translateY(0);
-}
+        /* Success Message */
+        #message {
+            display: none;
+            margin-top: 1rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--deep-rose);
+            animation: fadeIn 0.8s ease forwards;
+        }
 
-/* Floating Hearts */
-.heart{
-  position:absolute;
-  bottom:-20px;
-  font-size:20px;
-  animation: floatUp 6s linear infinite;
-  opacity:0.7;
-}
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-@keyframes floatUp{
-  0%{transform:translateY(0) scale(1);}
-  100%{transform:translateY(-100vh) scale(1.5);}
-}
-</style>
+        /* Confetti/Heart Burst */
+        .particle {
+            position: absolute;
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
 
-<div class="card">
-  <h1>Will you love me? 🌹</h1>
+    <div class="container" id="mainCard">
+        <h1 id="question">Will you love me?</h1>
+        
+        <div class="btn-group" id="btnGroup">
+            <button id="yesBtn">Yes</button>
+            <button id="noBtn">No</button>
+        </div>
 
-  <div class="buttons">
-    <button id="yes">Yes 💖</button>
-    <button id="no">No 😢</button>
-  </div>
+        <div id="message">I knew it! 💘</div>
+    </div>
 
-  <div class="popup" id="popup">
-    I knew it! 😍💘
-  </div>
-</div>
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const card = document.getElementById('mainCard');
+        const message = document.getElementById('message');
+        const question = document.getElementById('question');
 
-<script>
-const noBtn = document.getElementById("no");
-const yesBtn = document.getElementById("yes");
-const popup = document.getElementById("popup");
+        // Physics variables for the "No" button
+        let btnPos = { x: 0, y: 0 };
+        let targetPos = { x: 0, y: 0 };
+        let mousePos = { x: 0, y: 0 };
+        
+        // Initial positioning
+        function initPosition() {
+            const rect = noBtn.getBoundingClientRect();
+            const groupRect = document.getElementById('btnGroup').getBoundingClientRect();
+            // Offset relative to parent
+            btnPos.x = noBtn.offsetLeft;
+            btnPos.y = noBtn.offsetTop;
+            targetPos.x = btnPos.x;
+            targetPos.y = btnPos.y;
+        }
 
-/* Move No Button */
-noBtn.addEventListener("mouseover", function(){
-  const x = Math.random() * 200 - 100;
-  const y = Math.random() * 100 - 50;
-  noBtn.style.transform = `translate(${x}px, ${y}px)`;
-});
+        window.onload = initPosition;
 
-/* Yes Click */
-yesBtn.addEventListener("click", function(){
-  popup.classList.add("show");
-  createHearts();
-});
+        // Mouse Move logic
+        document.addEventListener('mousemove', (e) => {
+            mousePos.x = e.clientX;
+            mousePos.y = e.clientY;
+            avoidMouse();
+        });
 
-/* Floating Hearts Generator */
-function createHearts(){
-  for(let i=0;i<20;i++){
-    let heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "💖";
-    heart.style.left = Math.random()*100 + "vw";
-    heart.style.animationDuration = (Math.random()*3+3)+"s";
-    document.body.appendChild(heart);
+        // Touch logic for mobile
+        document.addEventListener('touchstart', (e) => {
+            mousePos.x = e.touches[0].clientX;
+            mousePos.y = e.touches[0].clientY;
+            avoidMouse();
+        });
 
-    setTimeout(()=>heart.remove(),6000);
-  }
-}
-</script>
+        function avoidMouse() {
+            const btnRect = noBtn.getBoundingClientRect();
+            const btnCenterX = btnRect.left + btnRect.width / 2;
+            const btnCenterY = btnRect.top + btnRect.height / 2;
 
+            const dist = Math.hypot(mousePos.x - btnCenterX, mousePos.y - btnCenterY);
+            const radius = 150; // Distance to trigger movement
+
+            if (dist < radius) {
+                const angle = Math.atan2(btnCenterY - mousePos.y, btnCenterX - mousePos.x);
+                const force = (radius - dist) / radius;
+                
+                // Calculate new random-ish escape position within viewport
+                const moveDist = 100 * force + 50; 
+                let newX = btnPos.x + Math.cos(angle) * moveDist;
+                let newY = btnPos.y + Math.sin(angle) * moveDist;
+
+                // Keep within card bounds loosely
+                const padding = 20;
+                const bounds = card.getBoundingClientRect();
+                
+                if (newX < -100) newX = 200;
+                if (newX > 300) newX = -100;
+                if (newY < -100) newY = 150;
+                if (newY > 200) newY = -150;
+
+                targetPos.x = newX;
+                targetPos.y = newY;
+            }
+        }
+
+        // Smooth Spring Animation Frame
+        function update() {
+            // Lerp (Linear Interpolation) for spring-like smoothness
+            btnPos.x += (targetPos.x - btnPos.x) * 0.15;
+            btnPos.y += (targetPos.y - btnPos.y) * 0.15;
+
+            noBtn.style.transform = `translate(${btnPos.x - noBtn.offsetLeft}px, ${btnPos.y - noBtn.offsetTop}px)`;
+            
+            requestAnimationFrame(update);
+        }
+        update();
+
+        // Yes Button Interaction
+        yesBtn.addEventListener('click', () => {
+            question.style.display = 'none';
+            noBtn.style.display = 'none';
+            yesBtn.style.display = 'none';
+            message.style.display = 'block';
+            card.style.transform = 'scale(1.05)';
+            
+            createHearts();
+            playSuccessSound();
+        });
+
+        function createHearts() {
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.innerHTML = '❤️';
+                    heart.className = 'particle';
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.top = '100%';
+                    heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                    heart.style.transition = `all ${Math.random() * 2 + 2}s ease-out`;
+                    heart.style.opacity = '1';
+                    
+                    document.body.appendChild(heart);
+
+                    setTimeout(() => {
+                        heart.style.transform = `translateY(-120vh) translateX(${(Math.random() - 0.5) * 200}px) rotate(${Math.random() * 360}deg)`;
+                        heart.style.opacity = '0';
+                    }, 50);
+
+                    setTimeout(() => heart.remove(), 4000);
+                }, i * 100);
+            }
+        }
+
+        // Browser-safe Sound logic
+        function playSuccessSound() {
+            const context = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = context.createOscillator();
+            const gain = context.createGain();
+
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(440, context.currentTime); // A4
+            oscillator.frequency.exponentialRampToValueAtTime(880, context.currentTime + 0.5); // A5
+            
+            gain.gain.setValueAtTime(0.1, context.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.5);
+
+            oscillator.connect(gain);
+            gain.connect(context.destination);
+
+            oscillator.start();
+            oscillator.stop(context.currentTime + 0.5);
+        }
+
+        // Background decorative hearts
+        function createBgHearts() {
+            const heartIcons = ['🌸', '💕', '✨', '☁️', '❤️'];
+            setInterval(() => {
+                const h = document.createElement('div');
+                h.className = 'bg-heart';
+                h.innerHTML = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+                h.style.left = Math.random() * 100 + 'vw';
+                h.style.fontSize = Math.random() * 15 + 10 + 'px';
+                h.style.duration = Math.random() * 3 + 4 + 's';
+                document.body.appendChild(h);
+                setTimeout(() => h.remove(), 6000);
+            }, 800);
+        }
+        createBgHearts();
+    </script>
 </body>
-</html>
+  </html>
+  
